@@ -1,0 +1,25 @@
+{
+  "name": "discord-economy-bot",
+  "version": "1.0.0",
+  "description": "Simple Discord economy bot with role-based money management",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon --config nodemon.json"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "economy"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.21.0",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
