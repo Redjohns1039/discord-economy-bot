@@ -70,6 +70,39 @@ async function registerCommands() {
   console.log("Komutlar global olarak yuklendi (yayilmasi biraz surebilir).");
 }
 
+async function sendProcessingMessage(interaction) {
+  if (!interaction.inGuild()) {
+    return null;
+  }
+
+  const channel = interaction.channel;
+
+  if (!channel || !channel.isTextBased()) {
+    return null;
+  }
+
+  try {
+    return await channel.send({
+      content: `${ICONS.info} Komut isleniyor, lutfen bekleyin...`
+    });
+  } catch (error) {
+    console.warn("Isleniyor mesaji gonderilemedi:", error?.message || error);
+    return null;
+  }
+}
+
+async function removeProcessingMessage(message) {
+  if (!message) {
+    return;
+  }
+
+  try {
+    await message.delete();
+  } catch (error) {
+    console.warn("Isleniyor mesaji silinemedi:", error?.message || error);
+  }
+}
+
 function startKeepAliveServer() {
   const port = Number(process.env.PORT || 3000);
 
@@ -117,7 +150,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
     return;
   }
 
+  let processingMessage = null;
+
   try {
+    processingMessage = await sendProcessingMessage(interaction);
     await command.execute(interaction);
   } catch (error) {
     console.error(`Komut calisirken hata: ${interaction.commandName}`, error);
@@ -148,6 +184,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
       console.error("Komut hata cevabi gonderilirken beklenmeyen hata:", replyError);
     }
+  } finally {
+    await removeProcessingMessage(processingMessage);
   }
 });
 
